@@ -14,27 +14,41 @@ dict1 = {1:10, 2:20}; disc2 = {1:20, 2:30}
 {'a':500, 'b':5874, 'c': 560,'d':400, 'e':5874, 'f': 20}
 """
 
-def task_1():
-    a = [1, 1, 2, 3, 5, 8, 13, 21, 34, 55, 89]
-    b = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
+def task_1(a, b):
+    c = set()
 
-    a = set(a)
-    b = set(b)
-    c = a & b
-    print(c)
+    for a_element in a:
+        if a_element in b:
+            c.add(a_element)
 
-def task_2():
-    dictionary = {1: 2, 3: 4, 4: 3, 2: 1, 0: 0}
+    return list(c)
 
-    dictionary_asc = dict(sorted(dictionary.items(), key=lambda item: item[1]))
-    dictionary_desc = dict(sorted(dictionary.items(), key=lambda item: item[1], reverse=True))
+def quick_sort_items(tuples_list, ascending=True):
+    if len(tuples_list) <= 1:
+        return tuples_list
+    else:
+        pivot = tuples_list[0][1]
 
-    print(dictionary_asc)
-    print(dictionary_desc)
+        if ascending:
+            before_pivot = [item for item in tuples_list[1:] if item[1] <= pivot]
+            after_pivot = [item for item in tuples_list[1:] if item[1] > pivot]
+        else:
+            before_pivot = [item for item in tuples_list[1:] if item[1] >= pivot]
+            after_pivot = [item for item in tuples_list[1:] if item[1] < pivot]
 
-def task_3():
-    dict1 = {1: 10, 2: 20, 7: 80}
-    dict2 = {1: 20, 2: 30, 8: 90}
+        return quick_sort_items(before_pivot, ascending) + [tuples_list[0]] \
+                + quick_sort_items(after_pivot, ascending)
+
+def task_2(dictionary):
+    dictionary_asc = list(dictionary.items())
+    dictionary_desc = list(dictionary.items())
+
+    dictionary_asc = quick_sort_items(dictionary_asc, ascending=True)
+    dictionary_desc = quick_sort_items(dictionary_desc, ascending=False)
+
+    return dict(dictionary_asc), dict(dictionary_desc)
+
+def task_3(dict1, dict2):
     dict3 = dict1.copy()
 
     for key, value in dict2.items():
@@ -42,12 +56,11 @@ def task_3():
             dict3[key] += value
         else:
             dict3[key] = value
-    print(dict3)
 
-def task_4():
-    dictionary = {'a':500, 'b':5874, 'c': 560,'d':400, 'e':5874, 'f': 20}
+    return dict3
 
-    for i in range(3):
-        key = max(dictionary, key=dictionary.get)
-        value = dictionary.pop(key)
-        print('Key: ', key, '   Value: ', value)
+def task_4(dictionary):
+    dictionary = list(dictionary.items())
+    sorted_dictionary = quick_sort_items(dictionary, ascending=False)
+    x, y, z = tuple(item[0] for item in sorted_dictionary[:3])
+    return x, y, z
